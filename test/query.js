@@ -44,7 +44,8 @@ suite('query', function() {
     var results = jp.nodes(data, '$.store.*');
     assert.deepEqual(results, [
       { path: ['$', 'store', 'book'], value: data.store.book },
-      { path: ['$', 'store', 'bicycle'], value: data.store.bicycle }
+      { path: ['$', 'store', 'bicycle'], value: data.store.bicycle },
+      { path: ['$', 'store', 'wagon'], value: data.store.wagon }
     ]);
   });
 
@@ -55,7 +56,8 @@ suite('query', function() {
       { path: ['$', 'store', 'book', 1, 'price'], value: 12.99 },
       { path: ['$', 'store', 'book', 2, 'price'], value: 8.99 },
       { path: ['$', 'store', 'book', 3, 'price'], value: 22.99 },
-      { path: ['$', 'store', 'bicycle', 'price'], value: 19.95 }
+      { path: ['$', 'store', 'bicycle', 'price'], value: 19.95 },
+      { path: ['$', 'store', 'wagon', 'price'], value: 14.67 }
     ]);
   });
 
@@ -102,13 +104,13 @@ suite('query', function() {
       { path: [ '$', 'store' ], value: data.store },
       { path: [ '$', 'store', 'book' ], value: data.store.book },
       { path: [ '$', 'store', 'bicycle' ], value: data.store.bicycle },
+      { path: [ '$', 'store', 'wagon' ], value: data.store.wagon },
       { path: [ '$', 'store', 'book', 0 ], value: data.store.book[0] },
       { path: [ '$', 'store', 'book', 1 ], value: data.store.book[1] },
       { path: [ '$', 'store', 'book', 2 ], value: data.store.book[2] },
       { path: [ '$', 'store', 'book', 3 ], value: data.store.book[3] },
       { path: [ '$', 'store', 'book', 0, 'category' ], value: 'reference' },
       { path: [ '$', 'store', 'book', 0, 'author' ], value: 'Nigel Rees' },
-      { path: [ '$', 'store', 'book', 0, 'title' ], value: 'Sayings of the Century' }
     ])
   });
 
@@ -119,6 +121,7 @@ suite('query', function() {
       { path: [ '$', 'store' ], value: data.store },
       { path: [ '$', 'store', 'book' ], value: data.store.book },
       { path: [ '$', 'store', 'bicycle' ], value: data.store.bicycle },
+      { path: [ '$', 'store', 'wagon' ], value: data.store.wagon },
       { path: [ '$', 'store', 'book', 0 ], value: data.store.book[0] },
       { path: [ '$', 'store', 'book', 1 ], value: data.store.book[1] },
       { path: [ '$', 'store', 'book', 2 ], value: data.store.book[2] },
@@ -142,7 +145,9 @@ suite('query', function() {
       { path: [ '$', 'store', 'book', 3, 'isbn' ], value: '0-395-19395-8' },
       { path: [ '$', 'store', 'book', 3, 'price' ], value: 22.99 },
       { path: [ '$', 'store', 'bicycle', 'color' ], value: 'red' },
-      { path: [ '$', 'store', 'bicycle', 'price' ], value: 19.95 }
+      { path: [ '$', 'store', 'bicycle', 'price' ], value: 19.95 },
+      { path: [ '$', 'store', 'wagon', 'color' ], value: 'red' },
+      { path: [ '$', 'store', 'wagon', 'price' ], value: 14.67 }
     ]);
   });
 
@@ -153,7 +158,7 @@ suite('query', function() {
 
   test('object subscript wildcard', function() {
     var results = jp.query(data, '$.store[*]');
-    assert.deepEqual(results, [ data.store.book, data.store.bicycle ]);
+    assert.deepEqual(results, [ data.store.book, data.store.bicycle, data.store.wagon ]);
   });
 
   test('no match returns empty array', function() {
@@ -312,6 +317,12 @@ suite('query', function() {
     assert.deepEqual(results, data.store.book);
   });
 
+  
+  test('filter simple object', function() {
+    var pathExpression = '$.store[?( name() == "bicycle" && @.color=="red" )].price'
+    var results = jp.query(data, pathExpression);
+    assert.deepEqual(results, [19.95]);
+  });
   test('array indexes from 0 to 100', function() {
     var data = [];
     for (var i = 0; i <= 100; ++i)

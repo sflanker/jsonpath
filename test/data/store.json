@@ -26,6 +26,10 @@
     "bicycle": {
       "color": "red",
       "price": 19.95
+    },
+    "wagon": {
+      "color": "red",
+      "price": 14.67
     }
   }
 }
